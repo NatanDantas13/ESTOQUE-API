@@ -1,9 +1,9 @@
-import { IsEmail, IsEnum, IsNotEmpty } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber } from "class-validator";
 import { Role } from "src/core/common/enums/role.enum";
 
 export class UserDto {
-@IsNotEmpty()
-id: string
+@IsNumber()
+id: number
 
 @IsNotEmpty()
 name: string
