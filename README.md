@@ -1,98 +1,192 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📘 Documentação Técnica - Sistema de Gestão de Estoque (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 1. 🎯 Objetivo do Sistema
 
-## Description
+|Objetivo|Descrição|
+|---|---|
+|Controle de estoque|Cadastro, movimentação, inventário e alerta|
+|Gestão de produtos|Com categorias, códigos, unidades e preços|
+|Usuários e permissões|Gestão de acessos e perfis|
+|Relatórios|Consultas de movimentações, produtos críticos|
+|Fornecedores|Cadastro e histórico de fornecimento|
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## 2. 👥 Público-Alvo
 
-```bash
-$ npm install
-```
+|Perfil|Descrição|
+|---|---|
+|Administrador|Acesso completo, incluindo relatórios e usuários|
+|Funcionário|Cadastro e movimentação, acesso restrito|
+|Multicliente|(Opcional) Isolamento por empresa/cliente|
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## 3. 🧩 Entidades e Atributos
 
-# watch mode
-$ npm run start:dev
+### 🧱 3.1 Produto
 
-# production mode
-$ npm run start:prod
-```
+|Campo|Tipo|Regras/Descrição|
+|---|---|---|
+|`id`|UUID|Identificador único|
+|`code`|string|Código/SKU único|
+|`name`|string|Nome do produto|
+|`category`|string|Categoria do produto|
+|`unit`|Enum<Unidade>|Unidade de medida|
+|`price`|decimal(10,2)|Valor de custo ou venda|
+|`minimumStock`|integer|Quantidade mínima para alerta|
+|`currentStock`|integer|Atualizado a cada movimentação|
+|`supplierId`|UUID (FK)|Referência para fornecedor (opcional)|
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ npm run test
+### 🧱 3.2 Movimentação
 
-# e2e tests
-$ npm run test:e2e
+|Campo|Tipo|Regras/Descrição|
+|---|---|---|
+|`id`|UUID|Identificador único|
+|`productId`|UUID (FK)|Produto relacionado|
+|`userId`|UUID (FK)|Usuário que realizou a ação|
+|`quantity`|integer|Quantidade movimentada|
+|`type`|Enum<MovType>|Entrada ou saída|
+|`date`|datetime|Data da movimentação|
+|`observation`|string (opcional)|Justificativa ou observações|
 
-# test coverage
-$ npm run test:cov
-```
+---
 
-## Deployment
+### 🧱 3.3 Usuário
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+| Campo      | Tipo           | Regras/Descrição     |
+| ---------- | -------------- | -------------------- |
+| `id`       | UUID           | Identificador único  |
+| `name`     | string         | Nome completo        |
+| `email`    | string         | E-mail único         |
+| `password` | string         | Hash com bcrypt      |
+| `role`     | Enum<UserRole> | Perfil de acesso     |
+| `active`   | boolean        | Controle de ativação |
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+---
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+### 🧱 3.4 Fornecedor
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+|Campo|Tipo|Regras/Descrição|
+|---|---|---|
+|`id`|UUID|Identificador único|
+|`name`|string|Nome fantasia|
+|`cnpj`|string|Formato 00.000.000/0000-00|
+|`email`|string|Contato|
+|`phone`|string|Telefone|
+|`address`|string|Endereço completo|
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+### 🧱 3.5 Relacionamentos
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+|Entidade|Relacionamento|Descrição|
+|---|---|---|
+|Produto → Fornecedor|ManyToOne|Um fornecedor pode fornecer muitos produtos|
+|Movimentação → Produto|ManyToOne|Muitas movimentações para um produto|
+|Movimentação → Usuário|ManyToOne|Muitas movimentações feitas por um usuário|
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 4. 🎛️ Enums
 
-## Stay in touch
+### 🧾 Unidade (Unidade de Medida)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+ts
 
-## License
+CopiarEditar
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+`Unidade = ['UNIDADE', 'LITRO', 'KILOGRAMA', 'CAIXA']`
+
+|Valor|Descrição|
+|---|---|
+|UNIDADE|Unidade simples|
+|LITRO|Volume|
+|KILOGRAMA|Peso|
+|CAIXA|Agrupamento físico|
+
+---
+
+### 🔁 Tipo de Movimentação (MovType)
+
+ts
+
+CopiarEditar
+
+`MovType = ['ENTRADA', 'SAIDA']`
+
+|Valor|Descrição|
+|---|---|
+|ENTRADA|Entrada no estoque|
+|SAIDA|Saída/baixa do estoque|
+
+---
+
+### 🧑 Perfil de Usuário (UserRole)
+
+ts
+
+CopiarEditar
+
+`UserRole = ['ADMIN', 'OPERADOR']`
+
+|Valor|Descrição|
+|---|---|
+|ADMIN|Controle total do sistema|
+|OPERADOR|Acesso restrito a operações|
+
+---
+
+## 5. 📦 Regras de Negócio
+
+|Regra|Aplicação|
+|---|---|
+|Estoque não pode ficar negativo|Ao realizar saída, valida saldo|
+|Alerta de estoque mínimo|Notificação quando `currentStock` ≤ `minimumStock`|
+|SKU único por produto|`code` deve ser único por produto|
+|Restrição por perfil|ADMIN pode excluir e ver relatórios, OPERADOR não|
+|Registro obrigatório de movimentação|Nenhuma alteração de estoque ocorre sem log|
+|A movimentação altera o estoque automaticamente|Atualização de `currentStock` após cada entrada ou saída|
+
+---
+
+## 6. 🔐 Segurança
+
+|Item|Detalhe|
+|---|---|
+|Autenticação|JWT com validade e refresh|
+|Hash de senha|`bcrypt` com salt|
+|Autorização|Guards com verificação de `role`|
+|Controle de acesso|Decorators personalizados (`@Roles`)|
+|Rotas privadas|Protegidas por `AuthGuard`|
+
+---
+
+## 7. 📂 Estrutura de Pastas
+
+|Caminho|Descrição|
+|---|---|
+|`src/config/`|Configuração de banco, JWT, variáveis|
+|`src/shared/`|Interceptadores, guards, decorators|
+|`src/modules/products/`|Produto: entity, service, controller|
+|`src/modules/inventory/`|Movimentação de estoque|
+|`src/modules/users/`|Gestão de usuários|
+|`src/modules/auth/`|Login, token, guards|
+|`src/modules/suppliers/`|Cadastro de fornecedores|
+|`src/modules/reports/`|Geração de relatórios|
+|`src/main.ts`|Bootstrap principal da aplicação|
+
+---
+
+## 8. 📊 Relatórios e Dashboards (futuro)
+
+|Tipo de Relatório|Filtros Possíveis|Descrição|
+|---|---|---|
+|Movimentações|Por data, produto, tipo|Histórico de entradas e saídas|
+|Estoque mínimo|Automático|Produtos abaixo do nível mínimo|
+|Produtos parados|Sem movimentação recente|Identificação de itens obsoletos|
+|Auditoria por usuário|Por período|Log de ações do operador|
