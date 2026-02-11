@@ -15,6 +15,13 @@
       "when": 1765675040094,
       "tag": "0001_dapper_chronomancer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1770771452648,
+      "tag": "0002_outstanding_shinobi_shaw",
+      "breakpoints": true
     }
   ]
 }

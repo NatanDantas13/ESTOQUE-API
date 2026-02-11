@@ -3,6 +3,7 @@ import { CompanyModule } from './modules/company/company.module';
 import { DrizzleModule } from './database/drizzle.module'
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './modules/product/product.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { ProductModule } from './modules/product/product.module';
     }),
     CompanyModule,
     ProductModule,
-    DrizzleModule
+    DrizzleModule,
+    UserModule
   ],
   controllers: [],
   providers: [],

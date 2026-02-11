@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { CompanyDto } from 'src/core/dtos/company-dto';
+import type { CompanyDto } from 'src/core/dtos/company/company-dto';
 import { DrizzleService } from 'src/database/drizzle.service';
 import { company } from 'src/database/schema/company.schema'
 @Injectable()
