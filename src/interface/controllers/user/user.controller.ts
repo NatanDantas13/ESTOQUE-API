@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import type { UserCreatedDto } from 'src/core/dtos/user/user-created.dto';
+import { UserCreatedDto } from 'src/core/dtos/user/user-created.dto';
 import { UserResponseDto } from 'src/core/dtos/user/user-response.dto'
-import { CreatedUserService } from 'src/interface/service/created-user/created-user.service';
+import { CreatedUserService } from 'src/use-cases/created-user/created-user.service';
 
 
 
@@ -12,7 +12,7 @@ export class UserController {
   ){}
 
 
-  @Post('')
+  @Post('create')
   create(@Body() user: UserCreatedDto): Promise<UserResponseDto> {
     return this.createdUserService.execute(user)
   }
